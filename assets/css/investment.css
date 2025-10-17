@@ -1,3 +1,4 @@
+
 /* Investment Page Overrides */
 .invest-hero {
   background-image: url('../images/home-banner.png');
@@ -106,7 +107,7 @@
 }
 
 /* Risks Accordion */
-.risks { background: #f6f7f8; padding: 72px 0; position: relative; .heading{margin-bottom: 24px;} }
+.risks { overflow: hidden; background: #f6f7f8; padding: 72px 0; position: relative; .heading{margin-bottom: 24px;} }
 .risks .accordion { display: grid; gap: 16px; }
 .acc-item { background: #fff; border: 1px solid rgba(0,0,0,0.08); border-radius: 16px; overflow: hidden; box-shadow: 0 8px 18px rgba(0,0,0,0.04); }
 .acc-toggle { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 22px 24px; background: transparent; border: 0; text-align: left; cursor: pointer; }
@@ -124,7 +125,7 @@
 
 /* IRA CTA */
 .ira-cta { padding: 40px 0 80px; background: #fff; }
-.ira-card { position: relative; border: 1px solid rgba(0,0,0,0.08); border-radius: 16px; background: #fff; overflow: hidden; display: grid; grid-template-columns: 1.2fr 1fr; align-items: center; }
+.ira-card { position: relative;  border-radius: 16px; background: #fff; overflow: hidden; display: grid; grid-template-columns: 1.2fr 1fr; align-items: center; }
 .ira-content { padding: 40px 48px; }
 .ira-content .heading { margin: 0 0 12px 0; }
 .ira-content p { margin: 0 0 18px 0; color: #2a2a2a; }
@@ -141,4 +142,17 @@
   .ira-card { grid-template-columns: 1fr; }
   .ira-content { order: 2; padding: 24px; text-align: left; }
   .ira-card::before, .ira-card::after { display: none; }
+}
+
+/* Final Primary CTA */
+.final-cta { background: var(--color-primary); padding: 40px 0 0; }
+.final-wrap { position: relative;  background: transparent; padding: 36px 28px 24px; min-height: 260px; overflow: hidden; display: flex; flex-direction: column; align-items: start
+    ;}
+.final-cta .heading { color: #0b5a18; margin: 0 0 14px 0; font-weight: 600; }
+.cta-info { list-style: none; margin: 0 0 16px 0; padding: 0; display: grid; gap: 10px; }
+.cta-info li { display: flex; align-items: center; gap: 10px; color: #0b5a18; font-weight: 500; }
+.cta-info .icon { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; background: rgba(255,255,255,0.85); }
+
+@media (max-width: 992px) {
+  .final-wrap { padding: 28px 18px; }
 }
