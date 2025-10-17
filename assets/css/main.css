@@ -221,3 +221,45 @@ body {
   .hero-content { padding: 96px 0 36px; }
   .hero-stats { grid-template-columns: 1fr; gap: 16px; }
 }
+
+/* How It Works */
+.hiw {
+  position: relative;
+  background: linear-gradient(135deg, rgba(181,244,51,0.35) 0%, rgba(65,163,27,0.25) 100%);
+  padding: 72px 0;
+}
+.hiw-head { margin-bottom: 28px; }
+.hiw-title { color: #1c1c1c; margin: 0 0 6px 0; }
+.hiw-sub { color: #2a2a2a; opacity: 0.9; margin: 0; }
+
+.hiw-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+}
+.hiw-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 22px 22px 24px 22px;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.05);
+  border: 1px solid rgba(0,0,0,0.06);
+  display: flex;
+  gap: 18px;
+}
+.hiw-icon {
+  background: rgba(181,244,51,0.5);
+  width: 64px;
+  height: 64px;
+  min-width: 64px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.hiw-icon img { width: 36px; height: 36px; }
+.hiw-card-title { margin: 2px 0 8px; font-weight: 600; color: #1c1c1c; }
+.hiw-text { margin: 0; color: #353535; }
+
+@media (max-width: 992px) {
+  .hiw-grid { grid-template-columns: 1fr; }
+}
