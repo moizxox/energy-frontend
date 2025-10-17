@@ -252,15 +252,18 @@ function renderDonut(container) {
   var spec;
   try { spec = JSON.parse(specRaw); } catch (e) { return; }
   var segments = spec.segments || [];
-  var total = spec.total || segments.reduce(function (s, p) { return s + p.value; }, 0);
+  var sum = segments.reduce(function (s, p) { return s + Number(p.value || 0); }, 0);
+  var total = (spec.total === undefined || spec.total === null) ? sum : Number(spec.total);
   if (!segments.length || !total) return;
 
   container.innerHTML = '';
   var w = container.clientWidth;
   var h = container.clientHeight;
   var size = Math.min(w, h);
-  var innerR = size * 0.38;
-  var outerR = size * 0.48;
+  // 70% ring thickness: inner radius is 30% of outer radius
+  var thicknessRatio = 0.70; // 0..1, portion of radius taken by ring
+  var outerR = size * 0.50;
+  var innerR = Math.max(1, outerR * (1 - thicknessRatio));
   var cx = w / 2;
   var cy = h / 2;
   var svgNS = 'http://www.w3.org/2000/svg';
@@ -273,18 +276,47 @@ function renderDonut(container) {
     var end = start + angle;
     var path = document.createElementNS(svgNS, 'path');
     path.setAttribute('fill', seg.color || '#2aa84a');
+    // Subtle separation between segments
+    path.setAttribute('stroke', '#ffffff');
+    path.setAttribute('stroke-width', String(Math.max(2, size * 0.01)));
     path.setAttribute('d', donutSegmentPath(cx, cy, innerR, outerR, start, end));
     svg.appendChild(path);
     start = end;
   });
 
-  // center hole and text group for crispness
+  // center hole for crispness
   var center = document.createElementNS(svgNS, 'circle');
   center.setAttribute('cx', cx);
   center.setAttribute('cy', cy);
   center.setAttribute('r', innerR * 0.92);
   center.setAttribute('fill', '#fff');
   svg.appendChild(center);
+
+  // labels: prefer inside ring
+  var curr = -Math.PI / 2;
+  var ringWidth = outerR - innerR;
+  var fontSize = Math.max(10, Math.min(ringWidth * 0.55, size * 0.14));
+  segments.forEach(function (seg) {
+    var ang = (seg.value / total) * Math.PI * 2;
+    var mid = curr + ang / 2;
+    var rLabel = (innerR + outerR) / 2;
+    var lx = cx + rLabel * Math.cos(mid);
+    var ly = cy + rLabel * Math.sin(mid);
+    var text = document.createElementNS(svgNS, 'text');
+    text.textContent = seg.text || seg.label || String(seg.value);
+    text.setAttribute('x', lx);
+    text.setAttribute('y', ly);
+    text.setAttribute('text-anchor', 'middle');
+    text.setAttribute('dominant-baseline', 'middle');
+    text.setAttribute('fill', '#ffffff');
+    text.setAttribute('font-size', String(fontSize));
+    text.setAttribute('font-weight', '700');
+    text.setAttribute('paint-order', 'stroke');
+    text.setAttribute('stroke', 'rgba(0,0,0,0.25)');
+    text.setAttribute('stroke-width', '2');
+    svg.appendChild(text);
+    curr += ang;
+  });
 
   container.appendChild(svg);
 }
