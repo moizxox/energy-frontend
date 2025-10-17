@@ -23,6 +23,13 @@ document.addEventListener('DOMContentLoaded', function () {
     var data = readHpData(hp);
     renderHpChart(hp, data);
   }
+
+  // Render donut charts
+  var donuts = document.querySelectorAll('.fd-chart.donut');
+  if (donuts.length) {
+    donuts.forEach(function (el) { renderDonut(el); });
+    window.addEventListener('resize', function () { donuts.forEach(function (el) { renderDonut(el); }); });
+  }
 });
 
 
@@ -237,4 +244,63 @@ window.setHistoricalPerformanceData = function setHistoricalPerformanceData(data
   var ds = { max: (data && data.max) || 12, points: (data && data.points) || [] };
   renderHpChart(container, ds);
 };
+
+// ----- Donut charts -----
+function renderDonut(container) {
+  var specRaw = container.getAttribute('data-donut');
+  if (!specRaw) return;
+  var spec;
+  try { spec = JSON.parse(specRaw); } catch (e) { return; }
+  var segments = spec.segments || [];
+  var total = spec.total || segments.reduce(function (s, p) { return s + p.value; }, 0);
+  if (!segments.length || !total) return;
+
+  container.innerHTML = '';
+  var w = container.clientWidth;
+  var h = container.clientHeight;
+  var size = Math.min(w, h);
+  var innerR = size * 0.38;
+  var outerR = size * 0.48;
+  var cx = w / 2;
+  var cy = h / 2;
+  var svgNS = 'http://www.w3.org/2000/svg';
+  var svg = document.createElementNS(svgNS, 'svg');
+  svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h);
+
+  var start = -Math.PI / 2; // start at top
+  segments.forEach(function (seg) {
+    var angle = (seg.value / total) * Math.PI * 2;
+    var end = start + angle;
+    var path = document.createElementNS(svgNS, 'path');
+    path.setAttribute('fill', seg.color || '#2aa84a');
+    path.setAttribute('d', donutSegmentPath(cx, cy, innerR, outerR, start, end));
+    svg.appendChild(path);
+    start = end;
+  });
+
+  // center hole and text group for crispness
+  var center = document.createElementNS(svgNS, 'circle');
+  center.setAttribute('cx', cx);
+  center.setAttribute('cy', cy);
+  center.setAttribute('r', innerR * 0.92);
+  center.setAttribute('fill', '#fff');
+  svg.appendChild(center);
+
+  container.appendChild(svg);
+}
+
+function donutSegmentPath(cx, cy, rInner, rOuter, a0, a1) {
+  var large = a1 - a0 > Math.PI ? 1 : 0;
+  var x0o = cx + rOuter * Math.cos(a0), y0o = cy + rOuter * Math.sin(a0);
+  var x1o = cx + rOuter * Math.cos(a1), y1o = cy + rOuter * Math.sin(a1);
+  var x1i = cx + rInner * Math.cos(a1), y1i = cy + rInner * Math.sin(a1);
+  var x0i = cx + rInner * Math.cos(a0), y0i = cy + rInner * Math.sin(a0);
+  return [
+    'M', x0o, y0o,
+    'A', rOuter, rOuter, 0, large, 1, x1o, y1o,
+    'L', x1i, y1i,
+    'A', rInner, rInner, 0, large, 0, x0i, y0i,
+    'Z'
+  ].join(' ');
+}
 
