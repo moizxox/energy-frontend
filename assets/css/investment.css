@@ -121,3 +121,24 @@
 
 /* light decorative corner similar to screenshot */
 .risks::after { content: ''; position: absolute; right: -120px; bottom: -160px; width: 520px; height: 520px; pointer-events: none; background: radial-gradient(closest-side, rgba(108,201,64,0.10), rgba(108,201,64,0.05) 60%, transparent 61%); border-radius: 50%; }
+
+/* IRA CTA */
+.ira-cta { padding: 40px 0 80px; background: #fff; }
+.ira-card { position: relative; border: 1px solid rgba(0,0,0,0.08); border-radius: 16px; background: #fff; overflow: hidden; display: grid; grid-template-columns: 1.2fr 1fr; align-items: center; }
+.ira-content { padding: 40px 48px; }
+.ira-content .heading { margin: 0 0 12px 0; }
+.ira-content p { margin: 0 0 18px 0; color: #2a2a2a; }
+.ira-media { position: relative; display: flex; align-items: center; justify-content: center; }
+.ira-media img { width: 100%; height: auto; display: block; }
+.btn-plus { display: inline-block; width: 20px; height: 20px; border-radius: 50%; border: 2px solid #000; position: relative; margin-left: 8px; }
+.btn-plus::before, .btn-plus::after { content: ''; position: absolute; background: #000; left: 50%; top: 50%; transform: translate(-50%, -50%); }
+.btn-plus::before { width: 10px; height: 2px; }
+.btn-plus::after { width: 2px; height: 10px; }
+
+
+@media (max-width: 1200px) { .ira-card::before { left: 40%; } .ira-card::after { width: 46%; } }
+@media (max-width: 992px) {
+  .ira-card { grid-template-columns: 1fr; }
+  .ira-content { order: 2; padding: 24px; text-align: left; }
+  .ira-card::before, .ira-card::after { display: none; }
+}
