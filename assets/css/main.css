@@ -320,7 +320,7 @@ body {
 }
 
 /* Projects */
-.projects { padding: 72px 0; background: #fff; }
+.projects { padding: 100px 0; background: #fff; }
 .projects-head { margin-bottom: 22px; }
 
 .projects-grid {
@@ -328,25 +328,32 @@ body {
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 24px;
 }
-.project-card { display: flex; flex-direction: column; gap: 14px; }
+.project-card { display: flex; flex-direction: column; }
 .project-media { border-radius: 16px; overflow: hidden; background: #f1f1f1; }
-.project-media img { width: 100%; height: auto; display: block; }
+.project-media img { width: 100%; height: 350px; object-fit: cover; display: block; }
 .project-body {
   background: #fff;
   border: 1px solid rgba(0,0,0,0.08);
   border-radius: 14px;
   padding: 18px 18px 20px;
   box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+  max-width: 90%;
+  margin: 0 auto;
+  margin-top: -100px;
 }
-.project-title { margin: 0 0 8px 0; font-weight: 700; color: #1c1c1c; }
-.project-text { margin: 0; color: #353535; }
+.project-title { margin: 0 0 8px 0; font-weight: 500; text-align: center; color: #1c1c1c; font-size: 24px; }
+.project-text { margin: 0; color: #353535; text-align: center; }
 
 .projects-foot {
   margin-top: 24px;
-  border: 2px solid rgba(0,0,0,0.1);
+  border: 2px solid #268226;
   border-radius: 12px;
   padding: 16px 18px;
   background: #f8f8f8;
+  p{
+    margin: 0;
+    font-weight: 600;
+  }
 }
 
 @media (max-width: 992px) {
