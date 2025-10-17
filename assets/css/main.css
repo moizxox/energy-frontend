@@ -1,0 +1,47 @@
+:root {
+  --color-primary: #b5f433;
+  --color-light-shade: #f8f8f8;
+  --color-heading: #1c1c1c;
+  --color-text: #353535;
+}
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: "Poppins", system-ui, -apple-system, Segoe UI, Roboto, Ubuntu,
+    Cantarell, Noto Sans, sans-serif;
+  line-height: 1.6;
+  background-color: #fff;
+  color: var(--color-text);
+}
+.bg-light-shade {
+  background-color: var(--color-light-shade) !important;
+}
+.text-heading {
+  color: var(--color-heading) !important;
+}
+.text-body {
+  color: var(--color-text) !important;
+}
+.text-primary {
+  color: var(--color-primary) !important;
+}
+.btn-primary {
+  --bs-btn-color: #000;
+  --bs-btn-bg: var(--color-primary);
+  --bs-btn-border-color: var(--color-primary);
+  --bs-btn-hover-bg: #a2db2d;
+  --bs-btn-hover-border-color: #a2db2d;
+  --bs-btn-active-bg: #8fc427;
+  --bs-btn-active-border-color: #8fc427;
+}
+.heading{
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 46px;
+}
