@@ -3,6 +3,7 @@
   --color-light-shade: #f8f8f8;
   --color-heading: #1c1c1c;
   --color-text: #353535;
+  --color-dark-primary: #268226;
 }
 * {
   box-sizing: border-box;
@@ -32,7 +33,9 @@ body {
 .text-primary {
   color: var(--color-primary) !important;
 }
-
+.text-dark-primary {
+  color: var(--color-dark-primary) !important;
+}
 .heading{
     font-family: 'Poppins', sans-serif;
     font-weight: 600;
