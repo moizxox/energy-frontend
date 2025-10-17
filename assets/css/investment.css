@@ -5,7 +5,7 @@
 
 /* If a specific investment hero image is provided in pages/hero.png, prefer it */
 @supports (background-image: url('../images/hero.png')) {
-  .invest-hero { background-image: url('../../pages/hero.png'); }
+  .invest-hero { background-image: url('../../assets/images/investment/hero.jpg'); }
 }
 
 /* Fine-tuning spacing for investment hero */
