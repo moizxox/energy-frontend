@@ -367,3 +367,19 @@ body {
 @media (max-width: 992px) {
   .cr-wrap { grid-template-columns: 1fr; }
 }
+
+/* Why Choose */
+.why-choose { padding: 72px 0; background: #f9faf9; }
+.wc-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; margin-top: 18px; }
+.wc-card { background: #fff; border: 1px solid rgba(0,0,0,0.08); border-radius: 16px; padding: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.04); }
+.wc-card.featured { background: var(--color-primary); border-color: var(--color-primary); }
+.wc-icon { width: 58px; height: 58px; border-radius: 12px; background: rgba(181,244,51,0.6); display: flex; align-items: center; justify-content: center; margin-bottom: 10px; }
+.wc-card.featured .wc-icon { background: #fff; }
+.wc-icon img { width: 30px; height: 30px; }
+.wc-title { margin: 6px 0 8px 0; font-weight: 600; color: #1c1c1c; }
+.wc-card.featured .wc-title { color: #000; }
+.wc-text { margin: 0; color: #353535; }
+
+@media (max-width: 992px) {
+  .wc-grid { grid-template-columns: 1fr; }
+}
