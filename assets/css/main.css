@@ -383,3 +383,13 @@ body {
 @media (max-width: 992px) {
   .wc-grid { grid-template-columns: 1fr; }
 }
+
+/* Environmental Impact */
+.env-impact { padding: 72px 0; background: #fff; }
+.ei-wrap { display: grid; grid-template-columns: 1.1fr 1fr; gap: 32px; align-items: center; }
+.ei-media img { width: 100%; height: auto; display: block; border-radius: 20px; }
+.ei-lead { font-weight: 500; color: #2a2a2a; }
+
+@media (max-width: 992px) {
+  .ei-wrap { grid-template-columns: 1fr; }
+}
