@@ -16,6 +16,13 @@ document.addEventListener('DOMContentLoaded', function () {
       animateRow(row, target, 900);
     });
   }
+
+  // Render Historical Performance chart if present
+  var hp = document.getElementById('hpGraph');
+  if (hp) {
+    var data = readHpData(hp);
+    renderHpChart(hp, data);
+  }
 });
 
 
@@ -64,4 +71,170 @@ function animateRow(row, targetPercent, durationMs) {
   }
   requestAnimationFrame(step);
 }
+
+// ----- Historical Performance Chart -----
+function readHpData(container) {
+  var max = parseFloat(container.getAttribute('data-max')) || 12; // percent
+  var items = container.querySelectorAll('.hp-data span');
+  var points = [];
+  items.forEach(function (el) {
+    points.push({
+      label: el.getAttribute('data-label') || '',
+      bar: parseFloat(el.getAttribute('data-bar')) || 0,
+      line: parseFloat(el.getAttribute('data-line')) || 0,
+    });
+  });
+  return { max: max, points: points };
+}
+
+function renderHpChart(container, dataset) {
+  // Clear
+  container.innerHTML = '';
+
+  var width = container.clientWidth;
+  var height = container.clientHeight;
+  var padding = { top: 20, right: 20, bottom: 36, left: 36 };
+  var w = Math.max(300, width);
+  var h = Math.max(200, height);
+  var innerW = w - padding.left - padding.right;
+  var innerH = h - padding.top - padding.bottom;
+
+  var svgNS = 'http://www.w3.org/2000/svg';
+  var svg = document.createElementNS(svgNS, 'svg');
+  svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h);
+
+  var g = document.createElementNS(svgNS, 'g');
+  g.setAttribute('transform', 'translate(' + padding.left + ',' + padding.top + ')');
+  svg.appendChild(g);
+
+  // Tooltip element
+  var tooltip = document.createElement('div');
+  tooltip.className = 'hp-tooltip';
+  container.appendChild(tooltip);
+
+  var points = dataset.points;
+  var n = points.length;
+  if (!n) { container.appendChild(svg); return; }
+
+  var yMax = dataset.max; // percentage scale 0..max
+  var xStep = innerW / n;
+  var barWidth = Math.max(16, xStep * 0.5);
+
+  function yScale(val) { return innerH - (val / yMax) * innerH; }
+  function xCenter(i) { return i * xStep + xStep / 2; }
+
+  // Grid stripes (banded background at 2% steps)
+  for (var gy = 0; gy <= yMax; gy += 2) {
+    var y = yScale(gy + 2);
+    var rect = document.createElementNS(svgNS, 'rect');
+    rect.setAttribute('x', 0);
+    rect.setAttribute('y', y);
+    rect.setAttribute('width', innerW);
+    rect.setAttribute('height', (2 / yMax) * innerH);
+    rect.setAttribute('fill', gy % 4 === 0 ? '#e9f2e8' : '#f3f7f3');
+    rect.setAttribute('opacity', '0.8');
+    g.appendChild(rect);
+  }
+
+  // Bars
+  points.forEach(function (p, i) {
+    var x = xCenter(i) - barWidth / 2;
+    var y = yScale(p.bar);
+    var rect = document.createElementNS(svgNS, 'rect');
+    rect.setAttribute('x', x);
+    rect.setAttribute('y', y);
+    rect.setAttribute('width', barWidth);
+    rect.setAttribute('height', innerH - y);
+    rect.setAttribute('fill', '#1f7a2f');
+    g.appendChild(rect);
+  });
+
+  // Smooth line path
+  var path = document.createElementNS(svgNS, 'path');
+  var d = '';
+  for (var i = 0; i < n; i++) {
+    var px = xCenter(i);
+    var py = yScale(points[i].line);
+    if (i === 0) {
+      d += 'M' + px + ' ' + py;
+    } else {
+      var prevX = xCenter(i - 1);
+      var prevY = yScale(points[i - 1].line);
+      var cx1 = prevX + (px - prevX) * 0.35;
+      var cy1 = prevY;
+      var cx2 = prevX + (px - prevX) * 0.65;
+      var cy2 = py;
+      d += ' C' + cx1 + ' ' + cy1 + ',' + cx2 + ' ' + cy2 + ',' + px + ' ' + py;
+    }
+  }
+  path.setAttribute('d', d);
+  path.setAttribute('fill', 'none');
+  path.setAttribute('stroke', '#0a2540');
+  path.setAttribute('stroke-width', '3');
+  g.appendChild(path);
+
+  // Line glow (shadow)
+  var glow = document.createElementNS(svgNS, 'path');
+  glow.setAttribute('d', d);
+  glow.setAttribute('fill', 'none');
+  glow.setAttribute('stroke', '#7ea0c4');
+  glow.setAttribute('stroke-width', '6');
+  glow.setAttribute('opacity', '0.35');
+  g.insertBefore(glow, path);
+
+  // Line dots
+  points.forEach(function (p, i) {
+    var cx = xCenter(i);
+    var cy = yScale(p.line);
+    var dot = document.createElementNS(svgNS, 'circle');
+    dot.setAttribute('cx', cx);
+    dot.setAttribute('cy', cy);
+    dot.setAttribute('r', 5);
+    dot.setAttribute('fill', '#fff');
+    dot.setAttribute('stroke', '#2aa84a');
+    dot.setAttribute('stroke-width', '3');
+    dot.style.cursor = 'pointer';
+
+    // Tooltip interactivity
+    dot.addEventListener('mouseenter', function () {
+      tooltip.textContent = p.label + ' • Bar: ' + p.bar + '% • Line: ' + p.line + '%';
+      tooltip.classList.add('show');
+      positionTooltip(tooltip, padding.left + cx, padding.top + cy);
+    });
+    dot.addEventListener('mousemove', function (ev) {
+      positionTooltip(tooltip, ev.offsetX, ev.offsetY);
+    });
+    dot.addEventListener('mouseleave', function () {
+      tooltip.classList.remove('show');
+    });
+    g.appendChild(dot);
+  });
+
+  // X labels
+  points.forEach(function (p, i) {
+    var tx = document.createElementNS(svgNS, 'text');
+    tx.textContent = p.label;
+    tx.setAttribute('x', xCenter(i));
+    tx.setAttribute('y', innerH + 24);
+    tx.setAttribute('text-anchor', 'middle');
+    tx.setAttribute('fill', '#666');
+    tx.setAttribute('font-size', '12');
+    g.appendChild(tx);
+  });
+
+  container.appendChild(svg);
+}
+
+function positionTooltip(el, x, y) {
+  el.style.left = x + 'px';
+  el.style.top = y + 'px';
+}
+
+// Public API to update chart dynamically
+window.setHistoricalPerformanceData = function setHistoricalPerformanceData(data) {
+  var container = document.getElementById('hpGraph');
+  if (!container) return;
+  var ds = { max: (data && data.max) || 12, points: (data && data.points) || [] };
+  renderHpChart(container, ds);
+};
 
