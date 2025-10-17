@@ -351,3 +351,19 @@ body {
 @media (max-width: 992px) {
   .pm-wrap { grid-template-columns: 1fr; }
 }
+
+/* Client Returns */
+.client-returns { padding: 72px 0; background: #fff; }
+.cr-wrap { display: grid; grid-template-columns: 1.2fr 1fr; gap: 32px; align-items: center; }
+.cr-lead { font-weight: 500; color: #2a2a2a; }
+.cr-list { margin: 12px 0 0 0; padding-left: 18px; }
+.cr-list li { margin-bottom: 10px; }
+
+.cr-chart { position: relative; background: #fbfbfb; border: 1px solid rgba(0,0,0,0.06); border-radius: 16px; padding: 16px; overflow: hidden; }
+.cr-chart .bars { display: flex; align-items: flex-end; gap: 18px; height: 340px; padding: 8px 12px; }
+.cr-chart .bars span { width: 56px; background: #1f7a2f; border-radius: 8px 8px 0 0; display: inline-block; }
+.cr-chart .trend { position: absolute; inset: 0; pointer-events: none; }
+
+@media (max-width: 992px) {
+  .cr-wrap { grid-template-columns: 1fr; }
+}
