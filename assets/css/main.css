@@ -268,7 +268,7 @@ body {
 }
 
 /* Market Trends */
-.market-trends { padding: 72px 0; background: #f7faf7; position: relative; }
+.market-trends { padding: 100px 0; background: #f7faf7; position: relative;background-image: url('../images/bg-ele-1.png'); background-size: cover; background-position: right; background-repeat: no-repeat; }
 .mt-head { margin-bottom: 22px; }
 .mt-sub { margin: 0; color: #353535; opacity: 0.9; }
 
@@ -278,7 +278,15 @@ body {
   gap: 24px;
   margin-top: 12px;
 }
-.mt-card { border-radius: 16px; overflow: hidden; background: #000; }
+.mt-card { border-radius: 16px; overflow: hidden;   }
+.mt-media-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(270deg, transparent 29.55%, #000 112.19%);
+}
 .mt-media {
   position: relative;
   padding-top: 56%;
@@ -287,8 +295,8 @@ body {
 }
 .mt-overlay {
   position: absolute;
-  left: 0; right: 0; bottom: 0;
-  background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.65) 90%);
+  left: 0; right: 0; top: 50%; transform: translateY(-50%);
+  /* background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.65) 90%); */
   color: #fff;
   padding: 18px 20px;
 }
@@ -296,10 +304,14 @@ body {
 
 .mt-foot {
   margin-top: 24px;
-  border: 2px solid rgba(0,0,0,0.1);
+  border: 2px solid #268226;
   border-radius: 12px;
   padding: 16px 18px;
   background: #fff;
+  p{
+    margin: 0;
+    font-weight: 600;
+  }
 }
 .market-trends .text-primary { color: var(--color-primary) !important; }
 
