@@ -30,6 +30,18 @@ document.addEventListener('DOMContentLoaded', function () {
     donuts.forEach(function (el) { renderDonut(el); });
     window.addEventListener('resize', function () { donuts.forEach(function (el) { renderDonut(el); }); });
   }
+
+  // Accordion toggles (Risks section)
+  var accToggles = document.querySelectorAll('.acc-toggle');
+  if (accToggles.length) {
+    accToggles.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var item = btn.closest('.acc-item');
+        var isOpen = item.classList.toggle('open');
+        btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      });
+    });
+  }
 });
 
 

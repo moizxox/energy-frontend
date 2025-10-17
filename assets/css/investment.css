@@ -104,3 +104,20 @@
   .fd-row { grid-template-columns: 1fr; }
   .fd-chart { height: 220px; }
 }
+
+/* Risks Accordion */
+.risks { background: #f6f7f8; padding: 72px 0; position: relative; .heading{margin-bottom: 24px;} }
+.risks .accordion { display: grid; gap: 16px; }
+.acc-item { background: #fff; border: 1px solid rgba(0,0,0,0.08); border-radius: 16px; overflow: hidden; box-shadow: 0 8px 18px rgba(0,0,0,0.04); }
+.acc-toggle { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 22px 24px; background: transparent; border: 0; text-align: left; cursor: pointer; }
+.acc-title { color: var(--color-dark-primary); font-weight: 500; font-size: clamp(18px, 2.6vw, 20px); }
+.acc-icon { width: 28px; height: 28px; border-radius: 50%; border: 2px solid #1c1c1c; position: relative; flex: 0 0 auto; }
+.acc-icon::before, .acc-icon::after { content: ''; position: absolute; background: #1c1c1c; left: 50%; top: 50%; transform: translate(-50%, -50%); }
+.acc-icon::before { width: 12px; height: 2px; }
+.acc-icon::after { width: 2px; height: 12px; transition: opacity 160ms ease; }
+.acc-item.open .acc-icon::after { opacity: 0; }
+.acc-panel { display: none; padding: 0 24px 22px 24px; color: #2a2a2a; }
+.acc-item.open .acc-panel { display: block; }
+
+/* light decorative corner similar to screenshot */
+.risks::after { content: ''; position: absolute; right: -120px; bottom: -160px; width: 520px; height: 520px; pointer-events: none; background: radial-gradient(closest-side, rgba(108,201,64,0.10), rgba(108,201,64,0.05) 60%, transparent 61%); border-radius: 50%; }
