@@ -19,6 +19,7 @@ body {
   background-color: #fff;
   color: var(--color-text);
 }
+
 .bg-light-shade {
   background-color: var(--color-light-shade) !important;
 }
@@ -31,15 +32,7 @@ body {
 .text-primary {
   color: var(--color-primary) !important;
 }
-.btn-primary {
-  --bs-btn-color: #000;
-  --bs-btn-bg: var(--color-primary);
-  --bs-btn-border-color: var(--color-primary);
-  --bs-btn-hover-bg: #a2db2d;
-  --bs-btn-hover-border-color: #a2db2d;
-  --bs-btn-active-bg: #8fc427;
-  --bs-btn-active-border-color: #8fc427;
-}
+
 .heading{
     font-family: 'Poppins', sans-serif;
     font-weight: 600;
@@ -78,4 +71,153 @@ body {
     background-color: transparent;
     color: #000;
     border: 1px solid #000;
+}
+
+/* Header */
+.site-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 20;
+  padding: 18px 0;
+}
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+.brand img {
+  height: 48px;
+  width: auto;
+  display: block;
+}
+.primary-nav {
+  display: block;
+}
+.nav-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+.nav-link {
+  text-decoration: none;
+  color: #fff;
+  opacity: 0.9;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+.nav-link:hover { opacity: 1; }
+.nav-link.active {
+  background: var(--color-primary);
+  color: #000;
+  padding: 8px 14px;
+  border-radius: 12px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.btn {
+  font-family: "Poppins", sans-serif;
+  padding: 10px 18px;
+  border-radius: 14px;
+  border: 1px solid transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-decoration: none;
+  font-weight: 500;
+}
+.btn-primary { background: var(--color-primary); color: #000; border-color: var(--color-primary); }
+.btn-ghost { background: transparent; color: #fff; border-color: rgba(255,255,255,0.5); }
+.btn-ghost-light { background: #fff; color: #000; border-color: #fff; }
+
+.nav-toggle {
+  display: none;
+  width: 40px;
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.2);
+}
+.nav-toggle span {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background: #fff;
+  margin: 3px 0;
+}
+
+/* Hero */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: stretch;
+  background-image: url('../images/home-banner.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+}
+.hero .container { position: relative; z-index: 1; display: flex; align-items: center; }
+.hero-content { color: #fff; max-width: 760px; padding: 120px 0 48px; }
+.hero-title {
+  margin: 0 0 16px 0;
+  font-weight: 600;
+  font-size: clamp(32px, 5vw, 64px);
+  line-height: 1.1;
+  color: #fff;
+}
+.hero-subtitle {
+  margin: 0 0 6px 0;
+  color: rgba(255,255,255,0.9);
+  font-size: clamp(14px, 1.5vw, 18px);
+}
+.hero-location {
+  margin: 0 0 20px 0;
+  color: rgba(255,255,255,0.9);
+}
+.hero-ctas { display: flex; gap: 14px; margin-bottom: 28px; flex-wrap: wrap; }
+
+.hero-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  padding-top: 24px;
+  border-top: 2px solid rgba(255,255,255,0.35);
+}
+.stat-value { color: #fff; font-weight: 700; font-size: clamp(22px, 3vw, 40px); }
+.stat-label { color: rgba(255,255,255,0.9); font-size: 14px; }
+
+/* Responsive */
+@media (max-width: 992px) {
+  .primary-nav { position: absolute; top: 100%; left: 0; right: 0; background: rgba(0,0,0,0.86); display: none; padding: 16px 24px; }
+  .primary-nav.open { display: block; }
+  .nav-list { flex-direction: column; align-items: flex-start; gap: 14px; }
+  .nav-link.active { padding: 8px 12px; }
+  .nav-toggle { display: inline-flex; }
+}
+
+@media (max-width: 768px) {
+  .header-inner { gap: 12px; }
+  .btn { padding: 9px 14px; }
+  .hero-content { padding: 96px 0 36px; }
+  .hero-stats { grid-template-columns: 1fr; gap: 16px; }
 }
