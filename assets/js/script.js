@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', function () {
     rows.forEach(function (row) {
       var target = clampPercent(parseFloat(row.getAttribute('data-alloc')) || 0);
       animateRow(row, target, 900);
+      enableAllocDragging(row);
     });
   }
 
@@ -89,6 +90,66 @@ function animateRow(row, targetPercent, durationMs) {
     if (t < 1) requestAnimationFrame(step);
   }
   requestAnimationFrame(step);
+}
+
+// Immediate, non-animated set for drag updates
+function setRowPercent(row, percent) {
+  var fill = row.querySelector('.alloc-fill');
+  var marker = row.querySelector('.alloc-marker');
+  var bubble = row.querySelector('.alloc-bubble');
+  if (!fill || !marker || !bubble) return;
+  var pct = clampPercent(percent);
+  fill.style.width = pct + '%';
+  marker.style.left = pct + '%';
+  bubble.textContent = Math.round(pct) + '%';
+}
+
+// Enable pointer-based dragging on allocation sliders
+function enableAllocDragging(row) {
+  var slider = row.querySelector('.alloc-slider');
+  var marker = row.querySelector('.alloc-marker');
+  if (!slider || !marker) return;
+
+  var isDragging = false;
+
+  function percentFromPointer(ev) {
+    var rect = slider.getBoundingClientRect();
+    var x = (ev.clientX !== undefined) ? ev.clientX : 0;
+    // Fallback for touch events if pointer events are not supported
+    if (x === 0 && ev.touches && ev.touches[0]) x = ev.touches[0].clientX;
+    var pct = ((x - rect.left) / rect.width) * 100;
+    return clampPercent(pct);
+  }
+
+  function startDrag(ev) {
+    isDragging = true;
+    try { slider.setPointerCapture && slider.setPointerCapture(ev.pointerId); } catch (_) {}
+    row.classList.add('dragging');
+    setRowPercent(row, percentFromPointer(ev));
+    row.setAttribute('data-alloc', String(Math.round(percentFromPointer(ev))));
+    ev.preventDefault();
+  }
+
+  function moveDrag(ev) {
+    if (!isDragging) return;
+    setRowPercent(row, percentFromPointer(ev));
+    row.setAttribute('data-alloc', String(Math.round(percentFromPointer(ev))));
+    ev.preventDefault();
+  }
+
+  function endDrag(ev) {
+    if (!isDragging) return;
+    isDragging = false;
+    try { slider.releasePointerCapture && slider.releasePointerCapture(ev.pointerId); } catch (_) {}
+    row.classList.remove('dragging');
+    ev.preventDefault();
+  }
+
+  // Pointer Events (covers mouse + touch on modern browsers)
+  slider.addEventListener('pointerdown', startDrag);
+  marker.addEventListener('pointerdown', startDrag);
+  window.addEventListener('pointermove', moveDrag);
+  window.addEventListener('pointerup', endDrag);
 }
 
 // ----- Historical Performance Chart -----
