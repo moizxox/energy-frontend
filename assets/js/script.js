@@ -18,18 +18,17 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // Render Historical Performance chart if present
+  // Render Historical Performance chart (Chart.js)
   var hp = document.getElementById('hpGraph');
   if (hp) {
-    var data = readHpData(hp);
-    renderHpChart(hp, data);
+    renderHpChartJS(hp);
   }
 
-  // Render donut charts
+  // Render donut charts (Chart.js)
   var donuts = document.querySelectorAll('.fd-chart.donut');
   if (donuts.length) {
-    donuts.forEach(function (el) { renderDonut(el); });
-    window.addEventListener('resize', function () { donuts.forEach(function (el) { renderDonut(el); }); });
+    donuts.forEach(function (el) { renderDonutJS(el); });
+    window.addEventListener('resize', function () { donuts.forEach(function (el) { renderDonutJS(el); }); });
   }
 
   // Accordion toggles (Risks section)
@@ -167,142 +166,27 @@ function readHpData(container) {
   return { max: max, points: points };
 }
 
-function renderHpChart(container, dataset) {
-  // Clear
+// Replace custom SVG chart with Chart.js combo (bar + line)
+function renderHpChartJS(container) {
+  var data = readHpData(container);
+  var labels = data.points.map(function (p) { return p.label; });
+  var bars = data.points.map(function (p) { return p.bar; });
+  var line = data.points.map(function (p) { return p.line; });
   container.innerHTML = '';
-
-  var width = container.clientWidth;
-  var height = container.clientHeight;
-  var padding = { top: 20, right: 20, bottom: 36, left: 36 };
-  var w = Math.max(300, width);
-  var h = Math.max(200, height);
-  var innerW = w - padding.left - padding.right;
-  var innerH = h - padding.top - padding.bottom;
-
-  var svgNS = 'http://www.w3.org/2000/svg';
-  var svg = document.createElementNS(svgNS, 'svg');
-  svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h);
-
-  var g = document.createElementNS(svgNS, 'g');
-  g.setAttribute('transform', 'translate(' + padding.left + ',' + padding.top + ')');
-  svg.appendChild(g);
-
-  // Tooltip element
-  var tooltip = document.createElement('div');
-  tooltip.className = 'hp-tooltip';
-  container.appendChild(tooltip);
-
-  var points = dataset.points;
-  var n = points.length;
-  if (!n) { container.appendChild(svg); return; }
-
-  var yMax = dataset.max; // percentage scale 0..max
-  var xStep = innerW / n;
-  var barWidth = Math.max(16, xStep * 0.5);
-
-  function yScale(val) { return innerH - (val / yMax) * innerH; }
-  function xCenter(i) { return i * xStep + xStep / 2; }
-
-  // Grid stripes (banded background at 2% steps)
-  for (var gy = 0; gy <= yMax; gy += 2) {
-    var y = yScale(gy + 2);
-    var rect = document.createElementNS(svgNS, 'rect');
-    rect.setAttribute('x', 0);
-    rect.setAttribute('y', y);
-    rect.setAttribute('width', innerW);
-    rect.setAttribute('height', (2 / yMax) * innerH);
-    rect.setAttribute('fill', gy % 4 === 0 ? '#e9f2e8' : '#f3f7f3');
-    rect.setAttribute('opacity', '0.8');
-    g.appendChild(rect);
-  }
-
-  // Bars
-  points.forEach(function (p, i) {
-    var x = xCenter(i) - barWidth / 2;
-    var y = yScale(p.bar);
-    var rect = document.createElementNS(svgNS, 'rect');
-    rect.setAttribute('x', x);
-    rect.setAttribute('y', y);
-    rect.setAttribute('width', barWidth);
-    rect.setAttribute('height', innerH - y);
-    rect.setAttribute('fill', '#1f7a2f');
-    g.appendChild(rect);
+  var canvas = document.createElement('canvas');
+  container.appendChild(canvas);
+  var chart = new Chart(canvas.getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [
+        { label: 'Return %', data: bars, backgroundColor: '#1f7a2f', borderRadius: 6, barPercentage: 0.6, categoryPercentage: 0.8 },
+        { type: 'line', label: 'Trend %', data: line, borderColor: '#0a2540', backgroundColor: 'rgba(10,37,64,0.1)', borderWidth: 3, pointBackgroundColor: '#fff', pointBorderColor: '#2aa84a', pointBorderWidth: 3, tension: 0.35, yAxisID: 'y' }
+      ]
+    },
+    options: { maintainAspectRatio: false, scales: { y: { beginAtZero: true, grid: { drawOnChartArea: true } }, x: { grid: { display: false } } }, plugins: { legend: { display: false } } }
   });
-
-  // Smooth line path
-  var path = document.createElementNS(svgNS, 'path');
-  var d = '';
-  for (var i = 0; i < n; i++) {
-    var px = xCenter(i);
-    var py = yScale(points[i].line);
-    if (i === 0) {
-      d += 'M' + px + ' ' + py;
-    } else {
-      var prevX = xCenter(i - 1);
-      var prevY = yScale(points[i - 1].line);
-      var cx1 = prevX + (px - prevX) * 0.35;
-      var cy1 = prevY;
-      var cx2 = prevX + (px - prevX) * 0.65;
-      var cy2 = py;
-      d += ' C' + cx1 + ' ' + cy1 + ',' + cx2 + ' ' + cy2 + ',' + px + ' ' + py;
-    }
-  }
-  path.setAttribute('d', d);
-  path.setAttribute('fill', 'none');
-  path.setAttribute('stroke', '#0a2540');
-  path.setAttribute('stroke-width', '3');
-  g.appendChild(path);
-
-  // Line glow (shadow)
-  var glow = document.createElementNS(svgNS, 'path');
-  glow.setAttribute('d', d);
-  glow.setAttribute('fill', 'none');
-  glow.setAttribute('stroke', '#7ea0c4');
-  glow.setAttribute('stroke-width', '6');
-  glow.setAttribute('opacity', '0.35');
-  g.insertBefore(glow, path);
-
-  // Line dots
-  points.forEach(function (p, i) {
-    var cx = xCenter(i);
-    var cy = yScale(p.line);
-    var dot = document.createElementNS(svgNS, 'circle');
-    dot.setAttribute('cx', cx);
-    dot.setAttribute('cy', cy);
-    dot.setAttribute('r', 5);
-    dot.setAttribute('fill', '#fff');
-    dot.setAttribute('stroke', '#2aa84a');
-    dot.setAttribute('stroke-width', '3');
-    dot.style.cursor = 'pointer';
-
-    // Tooltip interactivity
-    dot.addEventListener('mouseenter', function () {
-      tooltip.textContent = p.label + ' • Bar: ' + p.bar + '% • Line: ' + p.line + '%';
-      tooltip.classList.add('show');
-      positionTooltip(tooltip, padding.left + cx, padding.top + cy);
-    });
-    dot.addEventListener('mousemove', function (ev) {
-      positionTooltip(tooltip, ev.offsetX, ev.offsetY);
-    });
-    dot.addEventListener('mouseleave', function () {
-      tooltip.classList.remove('show');
-    });
-    g.appendChild(dot);
-  });
-
-  // X labels
-  points.forEach(function (p, i) {
-    var tx = document.createElementNS(svgNS, 'text');
-    tx.textContent = p.label;
-    tx.setAttribute('x', xCenter(i));
-    tx.setAttribute('y', innerH + 24);
-    tx.setAttribute('text-anchor', 'middle');
-    tx.setAttribute('fill', '#666');
-    tx.setAttribute('font-size', '12');
-    g.appendChild(tx);
-  });
-
-  container.appendChild(svg);
+  container._chart = chart;
 }
 
 function positionTooltip(el, x, y) {
@@ -313,9 +197,12 @@ function positionTooltip(el, x, y) {
 // Public API to update chart dynamically
 window.setHistoricalPerformanceData = function setHistoricalPerformanceData(data) {
   var container = document.getElementById('hpGraph');
-  if (!container) return;
-  var ds = { max: (data && data.max) || 12, points: (data && data.points) || [] };
-  renderHpChart(container, ds);
+  if (!container || !container._chart) return;
+  var ds = (data && data.points) || [];
+  container._chart.data.labels = ds.map(function (p) { return p.label; });
+  container._chart.data.datasets[0].data = ds.map(function (p) { return p.bar; });
+  container._chart.data.datasets[1].data = ds.map(function (p) { return p.line; });
+  container._chart.update();
 };
 
 // ----- Donut charts -----
@@ -394,18 +281,29 @@ function renderDonut(container) {
   container.appendChild(svg);
 }
 
-function donutSegmentPath(cx, cy, rInner, rOuter, a0, a1) {
-  var large = a1 - a0 > Math.PI ? 1 : 0;
-  var x0o = cx + rOuter * Math.cos(a0), y0o = cy + rOuter * Math.sin(a0);
-  var x1o = cx + rOuter * Math.cos(a1), y1o = cy + rOuter * Math.sin(a1);
-  var x1i = cx + rInner * Math.cos(a1), y1i = cy + rInner * Math.sin(a1);
-  var x0i = cx + rInner * Math.cos(a0), y0i = cy + rInner * Math.sin(a0);
-  return [
-    'M', x0o, y0o,
-    'A', rOuter, rOuter, 0, large, 1, x1o, y1o,
-    'L', x1i, y1i,
-    'A', rInner, rInner, 0, large, 0, x0i, y0i,
-    'Z'
-  ].join(' ');
+// Chart.js doughnut replacement
+function renderDonutJS(container) {
+  var specRaw = container.getAttribute('data-donut');
+  if (!specRaw) return;
+  var spec; try { spec = JSON.parse(specRaw); } catch (e) { return; }
+  var segments = spec.segments || [];
+  var sum = segments.reduce(function (s, p) { return s + Number(p.value || 0); }, 0);
+  var total = (spec.total === undefined || spec.total === null) ? sum : Number(spec.total);
+  if (!segments.length || !total) return;
+
+  container.innerHTML = '';
+  var canvas = document.createElement('canvas');
+  container.appendChild(canvas);
+
+  var labels = segments.map(function (s) { return s.label || ''; });
+  var values = segments.map(function (s) { return Number(s.value || 0); });
+  var colors = segments.map(function (s) { return s.color || '#2aa84a'; });
+
+  var chart = new Chart(canvas.getContext('2d'), {
+    type: 'doughnut',
+    data: { labels: labels, datasets: [{ data: values, backgroundColor: colors, borderWidth: 2, borderColor: '#fff' }] },
+    options: { maintainAspectRatio: false, cutout: '60%', plugins: { legend: { display: false } } }
+  });
+  container._chart = chart;
 }
 
