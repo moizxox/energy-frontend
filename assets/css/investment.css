@@ -644,7 +644,7 @@
       height: calc(100% + 40px);
       transform: translate(-50%, -50%);
       border-radius: 50%;
-      border: 40px solid var(--color-primary);
+      border: 40px solid var(--color-dark-primary);
       z-index: 0;
       pointer-events: none;
     }
@@ -675,7 +675,7 @@
     img {
       width: 60px;
       height: 60px;
-      padding: 2px;
+      padding: 6px;
       border-radius: 50%;
       background-color: var(--color-dark-primary);
     }
@@ -750,7 +750,7 @@
     img {
       width: 60px;
       height: 60px;
-      padding: 2px;
+      padding: 6px;
       border-radius: 50%;
       background-color: var(--color-blue);
     }
@@ -825,9 +825,10 @@
     img {
       width: 60px;
       height: 60px;
-      padding: 2px;
+      padding: 6px;
       border-radius: 50%;
       background-color: var(--color-primary);
+
     }
     div {
       display: flex;
