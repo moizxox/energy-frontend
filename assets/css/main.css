@@ -185,7 +185,7 @@ body {
   inset: 0;
   background: rgba(0,0,0,0.45);
 }
-.hero .container { position: relative; z-index: 1; display: flex; align-items: center; }
+.hero .container { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: flex-start; }
 .hero-content { color: #fff; max-width: 760px; padding: 120px 0 48px; }
 .hero-title {
   margin: 0 0 16px 0;
@@ -209,6 +209,7 @@ body {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 24px;
+  width: 100%;
   padding-top: 24px;
   border-top: 2px solid rgba(255,255,255,0.35);
 }
