@@ -675,3 +675,65 @@
     font-weight: 400;
   }
 }
+
+/* Responsive adjustments for Asset Map section */
+@media (max-width: 1200px) {
+  .asset-project-l {
+    display: flex;
+    justify-content: center;
+  }
+  .wrapper-asset-project {
+    gap: 32px;
+    padding: 28px 20px;
+  }
+  .asset-project-section .asset-project-header h3 {
+    font-size: 32px;
+  }
+}
+
+@media (max-width: 992px) {
+  .fund-map-asset {
+    padding: 60px 0;
+  }
+  .wrapper-asset-project {
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+  }
+  .asset-project-section .asset-project-l,
+  .asset-project-section .asset-project-r {
+    width: 100%;
+  }
+  .asset-project-section .asset-project-r .asset-project-header {
+    text-align: center;
+  }
+  .asset-project-icon-box {
+    max-width: 100%;
+  }
+}
+
+/* Collapse icon grid to 1 column on very small screens */
+@media (max-width: 576px) {
+  .asset-project-section .asset-project-header h3 {
+    font-size: 24px;
+    line-height: 1.25;
+  }
+  .asset-project-section .asset-project-header p {
+    font-size: 14px;
+  }
+  .asset-project-section .asset-project-l img {
+    max-width: 240px;
+  }
+  .asset-project-icon-item img {
+    width: 48px;
+    height: 48px;
+  }
+  .asset-project-icon-item p,
+  .asset-project-icon-item span {
+    font-size: 13px;
+  }
+  /* Override Bootstrap's row-cols-2 on this specific grid */
+  .fund-map-asset .asset-project-icon-box.row.row-cols-2 > * {
+    width: 100%;
+  }
+}
