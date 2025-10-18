@@ -423,7 +423,8 @@ body {
 }
 /* Why Choose */
 .why-choose { padding: 100px 0; background: var(--color-light-shade); }
-.wc-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; margin-top: 18px; }
+.wc-grid { display: flex; flex-wrap: wrap; gap: 24px; margin-top: 18px; justify-content: center; }
+.wc-grid > .wc-card { flex: 0 1 calc((100% - 48px) / 3); }
 .wc-card { background: #ffffff; border: 1px solid rgba(0,0,0,0.08); border-radius: 16px; padding: 30px; padding-bottom: 60px; box-shadow: 0 8px 20px rgba(0,0,0,0.04); display: flex; align-items: start; gap: 12px;transition: all 0.3s ease; flex-direction: column;overflow: hidden; position: relative; &::after{
     content: '';
     position: absolute;
@@ -461,7 +462,7 @@ body {
 .wc-text { margin: 0; color: #353535; }
 
 @media (max-width: 992px) {
-  .wc-grid { grid-template-columns: 1fr; }
+  .wc-grid > .wc-card { flex: 0 1 100%; }
 }
 
 /* Environmental Impact */
