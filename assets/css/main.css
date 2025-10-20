@@ -492,6 +492,7 @@ body {
   height: 350px;
   object-fit: cover;
   display: block;
+  object-position: bottom;
 }
 .project-body {
   background: #fff;
