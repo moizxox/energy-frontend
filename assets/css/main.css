@@ -902,6 +902,15 @@ body {
   justify-content: space-between;
   gap: 10px;
   width: 100%;
+  i{
+    transition: all .3s ease;
+  }
+  &:hover{
+    i{
+      transform: translateX(-10px);
+    }
+
+  }
 }
 .footer-links a i {
   color: var(--color-primary);
