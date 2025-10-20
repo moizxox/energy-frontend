@@ -31,6 +31,12 @@ document.addEventListener('DOMContentLoaded', function () {
     window.addEventListener('resize', function () { donuts.forEach(function (el) { renderDonutJS(el); }); });
   }
 
+  // Render Client Returns chart (Chart.js)
+  var crCanvas = document.getElementById('crChart');
+  if (crCanvas && typeof Chart !== 'undefined') {
+    renderClientReturnsChart(crCanvas);
+  }
+
   // Accordion toggles (Risks section)
   var accToggles = document.querySelectorAll('.acc-toggle');
   if (accToggles.length) {
@@ -305,5 +311,68 @@ function renderDonutJS(container) {
     options: { maintainAspectRatio: false, cutout: '60%', plugins: { legend: { display: false } } }
   });
   container._chart = chart;
+}
+
+// ----- Client Returns Chart (bar + line combo) -----
+function renderClientReturnsChart(canvas) {
+  var ctx = canvas.getContext('2d');
+  // Example data aligned with copy: show 8 quarters with ~12% IRR trend
+  var labels = ['Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'Q6', 'Q7', 'Q8'];
+  var bars = [6.5, 7.2, 8.1, 9.8, 10.1, 10.9, 11.6, 12.2];
+  var line = [6.5, 6.9, 7.5, 8.6, 9.4, 10.2, 11.1, 12.0];
+
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: 'Quarterly Return %',
+          data: bars,
+          backgroundColor: '#1f7a2f',
+          borderRadius: 8,
+          barPercentage: 0.6,
+          categoryPercentage: 0.8,
+          yAxisID: 'y'
+        },
+        {
+          type: 'line',
+          label: 'Trend (IRR %)',
+          data: line,
+          borderColor: '#0a2540',
+          backgroundColor: 'rgba(10,37,64,0.08)',
+          borderWidth: 3,
+          pointBackgroundColor: '#fff',
+          pointBorderColor: '#2aa84a',
+          pointBorderWidth: 3,
+          tension: 0.35,
+          yAxisID: 'y'
+        }
+      ]
+    },
+    options: {
+      maintainAspectRatio: false,
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            callback: function (value) { return value + '%'; }
+          },
+          grid: { drawOnChartArea: true }
+        },
+        x: {
+          grid: { display: false }
+        }
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function (ctx) { return (ctx.dataset.label || '') + ': ' + ctx.parsed.y + '%'; }
+          }
+        }
+      }
+    }
+  });
 }
 

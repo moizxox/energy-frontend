@@ -584,8 +584,9 @@ body {
 }
 .pm-card {
   background: var(--color-primary);
-  border-radius: 24px 24px 0 0;
+  border-radius:32px;
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
 }
 .pm-card img {
   display: block;
@@ -632,6 +633,11 @@ body {
   border-radius: 16px;
   padding: 16px;
   overflow: hidden;
+}
+.cr-chart canvas {
+  display: block;
+  width: 100% !important;
+  height: 360px !important;
 }
 .cr-chart .bars {
   display: flex;
