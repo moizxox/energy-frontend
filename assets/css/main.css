@@ -850,7 +850,7 @@ body {
 .footer-top {
   display: grid;
   grid-template-columns: 1.3fr 1fr 1fr 1fr;
-  gap: 24px;
+  gap: 50px;
   padding: 56px 0;
 }
 .footer-logo {
